@@ -1,37 +1,54 @@
+/*THIS TUTORIAL USED GSM SIM900A MINI V3.9.2
+ 
+  Connect 5VT to D9 and 5VR to D10
+  Feed GSM SIM900A with Arduino's 5V
 
+  Code by IDAYU SABRI - MYBOTIC
+*/
 
 #include <SoftwareSerial.h>
 SoftwareSerial mySerial(6, 7);
 char msg;
 char call;
 
-void bao_chay();
-//test
-int count = 0;
 void setup()
 {
-  mySerial.begin(9600);   // Setting the baud rate of GSM Module  
+  mySerial.begin(9600);   /a/ Setting the baud rate of GSM Module  
   Serial.begin(9600);    // Setting the baud rate of Serial Monitor (Arduino)
-  pinMode(3 ,INPUT);
-  
+  Serial.println("GSM SIM900A BEGIN");
+  Serial.println("Enter character for control option:");
+  Serial.println("h : to disconnect a call");
+  Serial.println("i : to receive a call");
+  Serial.println("s : to send message");
+  Serial.println("c : to make a call");  
+  Serial.println("e : to redial");
+  Serial.println();
+  delay(100);
 }
 
 void loop()
 {  
-//  Serial.print("test\n");
-  
-//  Serial.println(digitalRead(3));
-  if (digitalRead(3) == 0 && count == 0){
-    SendMessage();
-    delay(5000);
-    MakeCall();
-    count = 1;
-    Serial.print("He THong Bao Chay\n");
-  }else if (digitalRead(3) == 1){
-    count = 0;
+  if (Serial.available()>0)
+   switch(Serial.read())
+  {
+    case 's':
+      SendMessage();
+      break;
+    case 'c':
+      MakeCall();
+      break;
+    case 'h':
+      HangupCall();
+      break;
+    case 'e':
+      RedialCall();
+      break;
+    case 'i':
+      ReceiveCall();
+      break;
   }
-//  Serial.print(count);
-  delay(1000);
+ if (mySerial.available()>0)
+ Serial.write(mySerial.read());
 }
 
 void SendMessage()
@@ -46,7 +63,7 @@ void SendMessage()
   delay(1000);
 }
 
-/*void ReceiveMessage()
+void ReceiveMessage()
 {
   mySerial.println("AT+CNMI=2,2,0,0,0"); // AT Command to recieve a live SMS
   delay(1000);
@@ -56,7 +73,7 @@ void SendMessage()
     Serial.print(msg);
   }
 }
-*/
+
 void MakeCall()
 {
   mySerial.println("ATD+84355136883;"); // ATDxxxxxxxxxx; -- watch out here for semicolon at the end!!
@@ -64,7 +81,7 @@ void MakeCall()
   delay(1000);
 }
 
-/*
+
 void HangupCall()
 {
   mySerial.println("ATH");
@@ -87,4 +104,4 @@ void RedialCall()
   mySerial.println("ATDL");
   Serial.println("Redialing");
   delay(1000);
-}*/
+}
