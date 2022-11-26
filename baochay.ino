@@ -6,7 +6,7 @@ char msg;
 char call;
 
 void bao_chay();
-//test
+//check commited
 int count = 0;
 void setup()
 {
